@@ -1,81 +1,80 @@
 Draftable Django JS work test
 =============================
 
-Behold My Awesome Project!
+Tips
+----
 
-.. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg
-     :target: https://github.com/pydanny/cookiecutter-django/
-     :alt: Built with Cookiecutter Django
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-     :target: https://github.com/ambv/black
-     :alt: Black code style
+* If you have questions about specs/clarifications or what you're supposed to do,
+  please do ask. You should make your own decisions about how to structure the
+  code etc. Think of me as the product person and you the software engineer. That
+  said, if you get stuck on a technical thing, please do ask, I may be able to
+  help.
+
+* You don't need to do things in order.
+
+* After you're done, please push your code. If you're done before the time limit,
+  just finish early and we'll take that into account.
 
 
-:License: MIT
-
-
-Settings
+The Task
 --------
 
-Moved to settings_.
+Draftable's CRM (Contact Relationship Management) system currently stores the list of Draftable customers.
+We want to group these customers into their relevant organisations to make it easier to manage our contact list
+going forwards.  In this task we are ultimately trying to add a column called "Organisation" to the table on
+the front page of this sample app.
 
-.. _settings: http://cookiecutter-django.readthedocs.io/en/latest/settings.html
 
-Basic Commands
+Setup
 --------------
+This project was setup using Python 3.6, Ubuntu 18, postgresql 10, and Node 8.  It should be possible to complete it
+with any operating systems, but you may well have to fix small things as this is untested.  Please perform the following steps
+at the start of the work test and let us know if you have having problems.
 
-Setting Up Your Users
-^^^^^^^^^^^^^^^^^^^^^
+To setup a local environment, follow the following steps:
 
-* To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit it, you'll see a "Verify Your E-mail Address" page. Go to your console to see a simulated email verification message. Copy the link into your browser. Now the user's email should be verified and ready to go.
+* Clone this repository
 
-* To create an **superuser account**, use this command::
+* Install the pip requirements::
+
+    $ pip install -r requirements/local.txt
+
+* Create the database::
+
+    $ createdb worktest
+
+* Migrate the database::
+
+    $ ./manage.py migrate
+
+* Create an **superuser account** using this command::
 
     $ python manage.py createsuperuser
 
-For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
+* Install the npm packages and build the frontend::
 
-Type checks
-^^^^^^^^^^^
+    $ cd frontend
+    $ npm install
+    $ npm run build
 
-Running type checks with mypy:
+* You should now be able to run a server::
 
-::
+    $ ./manage.py runserver
 
-  $ mypy worktest
+If everything is working as expected, you should be able to see a table on the root URL of the website containing a list
+of customer names and email addresses.
 
-Test coverage
-^^^^^^^^^^^^^
+Detailed instructions
+-----------------------------
 
-To run the tests, check your test coverage, and generate an HTML coverage report::
-
-    $ coverage run -m pytest
-    $ coverage html
-    $ open htmlcov/index.html
-
-Running tests with py.test
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-::
-
-  $ pytest
-
-Live reloading and Sass CSS compilation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Moved to `Live reloading and SASS compilation`_.
-
-.. _`Live reloading and SASS compilation`: http://cookiecutter-django.readthedocs.io/en/latest/live-reloading-and-sass-compilation.html
-
-
-
-
-
-Deployment
-----------
-
-The following details how to deploy this application.
-
-
-
-
+* Create a new model called "Organisation", it should have two fields
+    * Name
+    * Date/time created
+* Add a nullable foreign key to the Customer model that links to Organisation
+* Using the existing data in the Customer table, create organisations. Note the following:
+    * If a customer has an email such as andrew@johnsonlegal.com, we want to create a new organisation with the name johnsonlegal, and link this customer to the organisation
+    * If a customer has a common domain name such as @gmail.com, skip these customers, as we don't want "gmail" as an organisation in our system
+    * We prefer you put this code in a django migration using RunPython, but providing a separate script is also fine.
+* Create an OrganisationAdmin class that allows users to view organisations in the Django admin. Also add an inline allowing users to see which customers are part of each organisation.
+* Modify the existing API endpoint such that it includes the customer organisation
+* Modify the react app so that it displays the customer's organisation in the table.

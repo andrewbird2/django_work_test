@@ -1,1 +1,15 @@
 {% extends "base.html" %}
+{% load render_bundle from webpack_loader %}
+
+{% block content %}
+    <h1>Draftable Customers</h1>
+<div id="root"></div>
+{% endblock %}
+
+{% block javascript %}
+        {{ block.super }}
+    {% render_bundle 'vendors' %}
+
+    {% render_bundle 'main' %}
+    {% render_bundle 'runtime~main' %}
+{% endblock %}
