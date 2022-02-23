@@ -37,6 +37,7 @@ To setup a local environment, follow the following steps:
 
 * Install the pip requirements::
 
+    $ pip install wheel
     $ pip install -r requirements/local.txt
 
 * Create the database::
